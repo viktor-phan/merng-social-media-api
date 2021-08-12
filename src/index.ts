@@ -1,14 +1,15 @@
 import { ApolloServer } from "apollo-server";
 import mongoose from "mongoose";
-import gql from "graphql-tag";
+import { PubSub } from "graphql-subscriptions";
 
-import { Post } from "./models/Post";
 import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
 
+const pubsub = new PubSub();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req }: any) => ({ req, pubsub } as any),
 });
 mongoose.connect("mongodb://localhost/testdb", {
   useNewUrlParser: true,
